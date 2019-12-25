@@ -24,8 +24,6 @@ public class User {
 
   private String phone;
 
-  private String group;
-
   private String photoLink;
 
   private String login;
@@ -33,6 +31,8 @@ public class User {
   private Long rating;
 
   private Boolean verified;
+
+  private String groupNumber;
 
   public long getId() {
     return id;
@@ -115,10 +115,10 @@ public class User {
   }
 
     public String getGroup() {
-        return group;
+        return groupNumber;
     }
 
     public void setGroup(String group) {
-        this.group = group;
+        this.groupNumber = group;
     }
 }

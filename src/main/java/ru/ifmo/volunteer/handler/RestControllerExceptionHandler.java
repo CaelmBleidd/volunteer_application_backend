@@ -13,21 +13,21 @@ import ru.ifmo.volunteer.exception.ResourceNotFoundException;
 @RestControllerAdvice
 public class RestControllerExceptionHandler {
 
-  @ExceptionHandler(value = {ResourceNotFoundException.class, EmptyResultDataAccessException.class})
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ResponseEntity<String> handle(final RuntimeException e) {
-    return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-  }
+    @ExceptionHandler(value = {ResourceNotFoundException.class, EmptyResultDataAccessException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handle(final RuntimeException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
-  @ExceptionHandler(value = AlreadyExistsException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ResponseEntity<String> handle(final AlreadyExistsException e) {
-    return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-  }
+    @ExceptionHandler(value = AlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handle(final AlreadyExistsException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
-  @ExceptionHandler(value = AuthorizationException.class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  public ResponseEntity<String> handle(final AuthorizationException e) {
-    return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.FORBIDDEN);
-  }
+    @ExceptionHandler(value = AuthorizationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<String> handle(final AuthorizationException e) {
+        return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.FORBIDDEN);
+    }
 }

@@ -1,7 +1,7 @@
 package ru.ifmo.volunteer.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
-  public ResourceNotFoundException(final String message) {
-    super(message);
-  }
+    public ResourceNotFoundException(final String message) {
+        super(message);
+    }
 }

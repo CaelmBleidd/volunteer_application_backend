@@ -7,45 +7,45 @@ import javax.persistence.Id;
 
 @Entity
 public class Achievement {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  private String logoUrl;
+    private String logoUrl;
 
-  private String title;
+    private String title;
 
-  private String description;
+    private String description;
 
-  public long getId() {
-    return id;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public void setId(long id) {
-    this.id = id;
-  }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  public String getLogoUrl() {
-    return logoUrl;
-  }
+    public String getLogoUrl() {
+        return logoUrl;
+    }
 
-  public void setLogoUrl(String logoUrl) {
-    this.logoUrl = logoUrl;
-  }
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
 
-  public String getTitle() {
-    return title;
-  }
+    public String getTitle() {
+        return title;
+    }
 
-  public void setTitle(String title) {
-    this.title = title;
-  }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
