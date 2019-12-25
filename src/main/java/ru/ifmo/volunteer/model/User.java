@@ -24,6 +24,8 @@ public class User {
 
   private String phone;
 
+  private String group;
+
   private String photoLink;
 
   private String login;
@@ -111,4 +113,12 @@ public class User {
   public void setVerified(Boolean verified) {
     this.verified = verified;
   }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
 }
