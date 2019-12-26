@@ -1,14 +1,7 @@
-package ru.ifmo.volunteer.model;
+package ru.ifmo.volunteer.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
-@Entity
-public class Event {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class EventTo {
     private long id;
 
     private Long startDate;
@@ -19,15 +12,19 @@ public class Event {
 
     private String description;
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     private String location;
+
+    private boolean starred;
+
+    public EventTo(long id, Long startDate, Long endDate, String title, String description, String location, boolean starred) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.starred = starred;
+    }
 
     public long getId() {
         return id;
@@ -69,4 +66,19 @@ public class Event {
         this.description = description;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public boolean isStarred() {
+        return starred;
+    }
+
+    public void setStarred(boolean starred) {
+        this.starred = starred;
+    }
 }

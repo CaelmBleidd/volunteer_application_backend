@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import ru.ifmo.volunteer.dto.EventTo;
 import ru.ifmo.volunteer.exception.AlreadyExistsException;
 import ru.ifmo.volunteer.exception.ResourceNotFoundException;
 import ru.ifmo.volunteer.model.Event;
@@ -47,35 +48,44 @@ public class EventService {
         return eventRepository.save(event);
     }
 
+    public void subscribe(final long userId, final long eventId) {
+        eventRepository
+                .findEventWithUserId(userId, eventId)
+                .ifPresent(
+                        u -> {
+                            throw new AlreadyExistsException("Вы уже были подписаны на это событие");
+                        });
+        eventRepository.subscribe(userId, eventId);
+    }
+
+    public void unsubscribe(final long userId, final long eventId) {
+        eventRepository
+                .findEventWithUserId(userId, eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Вы не были подписаны на это событие"));
+        eventRepository.unsubscribe(userId, eventId);
+    }
+
+
     public Event update(final Event event) {
         findById(event.getId());
         return eventRepository.save(event);
     }
 
-    public List<Event> getActualForUser(final long id) {
-        return eventRepository.findAllByUserId(id).stream()
-                              .filter(event -> !event.getFinished())
+    public List<EventTo> getActualForUser(final long id) {
+        return eventRepository.findAll().stream()
+                              .filter(event -> event.getEndDate()> System.currentTimeMillis())
+                              .map(event -> new EventTo(event.getId(),
+                                                        event.getStartDate(),
+                                                        event.getEndDate(),
+                                                        event.getTitle(),
+                                                        event.getDescription(),
+                                                        event.getLocation(),
+                                                        isStarred(id, event.getId())))
                               .collect(Collectors.toList());
     }
 
-    public List<Event> getHistoryForUser(final long id) {
-        return eventRepository.findAllByUserId(id).stream()
-                              .filter(Event::getFinished)
-                              .collect(Collectors.toList());
-    }
-
-    public Long ratingRequired(final long id) {
-        return eventRepository.ratingRequired(id);
-    }
-
-    public void finish(final long id) {
-        List<User> users = userRepository.getParticipantsById(id);
-        users.forEach(user -> userRepository.updateRating(user.getId(), user.getRating() + 15));
-        eventRepository.finish(id);
-    }
-
-    public void addRole(final long userId, final long roleId, final long eventId) {
-        eventRepository.addRole(userId, roleId, eventId);
+    private boolean isStarred(long userId, long eventId) {
+        return eventRepository.isStarred(userId, eventId) > 0;
     }
 
 }

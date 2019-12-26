@@ -43,6 +43,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query(value = "SELECT required_rating FROM event WHERE id = :id", nativeQuery = true)
     Long ratingRequired(@Param("id") Long id);
 
+    @Query(
+            value = "SELECT user_id FROM user_to_event WHERE user_id = :userId AND event_id = :eventId",
+            nativeQuery = true)
+    Optional<Long> findEventWithUserId(@Param("userId") Long userId, @Param("eventId") Long eventId);
+
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE event SET finished = true WHERE id = :id", nativeQuery = true)
@@ -55,4 +61,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             nativeQuery = true)
     void increment(Long eventId);
 
+    @Query(value = "SELECT COUNT(*) FROM user_to_event WHERE event_id = :eventId AND user_id = :userId",
+           nativeQuery = true)
+    int isStarred(@Param("userId") long userId, @Param("eventId") long eventId);
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.ifmo.volunteer.dto.EventTo;
 import ru.ifmo.volunteer.model.Event;
 import ru.ifmo.volunteer.service.EventService;
 
@@ -23,21 +24,6 @@ public class EventController {
 
     public EventController(final EventService eventService) {
         this.eventService = eventService;
-    }
-
-    @ApiOperation(
-            value = "Получить минимальный рейтинг для участников события",
-            produces = "application/json",
-            response = Long.class)
-    @GetMapping("{id}/rating_required")
-    public Long ratingRequired(@PathVariable final long id) {
-        return eventService.ratingRequired(id);
-    }
-
-    @ApiOperation(value = "Завершить событие", produces = "application/json")
-    @PutMapping("{id}/finish")
-    public void finish(@PathVariable final long id) {
-        eventService.finish(id);
     }
 
     @ApiOperation(
@@ -59,19 +45,25 @@ public class EventController {
     }
 
     @ApiOperation(
-            value = "Возвращает список событий, на которые подписан пользователь",
+            value = "Возвращает список событий для юзера",
             produces = "application/json",
             response = Event.class,
             responseContainer = "List")
-    @GetMapping("{id}/actual")
-    public List<Event> getActualForUser(@PathVariable final long id) {
+    @GetMapping("{id}/events")
+    public List<EventTo> getActualForUser(@PathVariable final long id) {
         return eventService.getActualForUser(id);
     }
 
-    @ApiOperation(value = "Возвращает историю событий, в которых участвовал пользователь")
-    @GetMapping("{id}/history")
-    public List<Event> getHistoryForUser(@PathVariable final long id) {
-        return eventService.getHistoryForUser(id);
+    @ApiOperation(value = "Отписаться от события", produces = "application/json")
+    @DeleteMapping("/unsubscribe")
+    public void unsubscribe(@RequestParam final long userId, @RequestParam final long eventId) {
+        eventService.unsubscribe(userId, eventId);
+    }
+
+    @ApiOperation(value = "Подписаться на событие", produces = "application/json")
+    @PostMapping("/subscribe")
+    public void subscribe(@RequestParam final long userId, @RequestParam final long eventId) {
+        eventService.subscribe(userId, eventId);
     }
 
     @ApiOperation(
