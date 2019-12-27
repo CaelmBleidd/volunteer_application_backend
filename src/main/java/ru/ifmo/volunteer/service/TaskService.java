@@ -28,11 +28,15 @@ public class TaskService {
         return taskRepository.findAllById(taskRepository.findAllTasksByEventId(id));
     }
 
+    private Optional<Long> nearestEventId(long userId) {
+        return eventRepository.findNearestEventId(userId).stream()
+                       .filter(event -> event.getEndDate() > System.currentTimeMillis())
+                       .min(Comparator.comparing(Event::getStartDate))
+                       .map(Event::getId);
+    }
+
     public List<TaskTo> getAllTasksForUserByEventId(long userId) {
-        Optional<Long> eventId = eventRepository.findNearestEventId(userId).stream()
-                                                .filter(event -> event.getEndDate() > System.currentTimeMillis())
-                                                .min(Comparator.comparing(Event::getStartDate))
-                                                .map(Event::getId);
+        Optional<Long> eventId = nearestEventId(userId);
         return eventId.map(aLong -> taskRepository.findAllById(taskRepository.findAllTasksByEventId(aLong)).stream()
                                                   .map(task -> new TaskTo(task.getId(),
                                                                           task.getTitle(),
@@ -41,10 +45,15 @@ public class TaskService {
                                                   .collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 
-    public TaskTo create(Task task, long eventId) {
-        Task savedTask = taskRepository.save(task);
+    public TaskTo create(TaskTo task, long userId) {
+        Task tmpTask = new Task(task.getId(), task.getTitle(), task.getDescription());
+        Task savedTask = taskRepository.save(tmpTask);
         taskRepository.addStatus(task.getId(), "new");
-        taskRepository.saveTaskToEvent(task.getId(), eventId);
+        Optional<Long> eventId = nearestEventId(userId);
+        if (!eventId.isPresent()) {
+            throw new ResourceNotFoundException("Вы не зарегистрированы ни на одно событие");
+        }
+        taskRepository.saveTaskToEvent(task.getId(), eventId.get());
         return new TaskTo(savedTask.getId(), savedTask.getTitle(), savedTask.getDescription(), "new");
     }
 

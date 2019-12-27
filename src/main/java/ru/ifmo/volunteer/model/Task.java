@@ -15,6 +15,14 @@ public class Task {
 
     private String description;
 
+    public Task() {
+    }
+
+    public Task(long id, String title, String description) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+    }
 
 
     public long getId() {

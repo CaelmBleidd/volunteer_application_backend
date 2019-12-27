@@ -33,9 +33,9 @@ public class TaskController {
             produces = "application/json",
             response = TaskTo.class
     )
-    @PostMapping("/event/{eventId}")
-    public TaskTo create(@RequestBody Task task, @PathVariable long eventId) {
-        return taskService.create(task, eventId);
+    @PostMapping("/{userId}/createTask")
+    public TaskTo create(@RequestBody TaskTo task, @PathVariable long userId) {
+        return taskService.create(task, userId);
     }
 
     @ApiOperation(
