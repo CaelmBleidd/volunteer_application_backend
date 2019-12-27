@@ -48,12 +48,12 @@ public class TaskService {
     public TaskTo create(TaskTo task, long userId) {
         Task tmpTask = new Task(task.getId(), task.getTitle(), task.getDescription());
         Task savedTask = taskRepository.save(tmpTask);
-        taskRepository.addStatus(task.getId(), "new");
+        taskRepository.addStatus(savedTask.getId(), "new");
         Optional<Long> eventId = nearestEventId(userId);
         if (!eventId.isPresent()) {
             throw new ResourceNotFoundException("Вы не зарегистрированы ни на одно событие");
         }
-        taskRepository.saveTaskToEvent(task.getId(), eventId.get());
+        taskRepository.saveTaskToEvent(savedTask.getId(), eventId.get());
         return new TaskTo(savedTask.getId(), savedTask.getTitle(), savedTask.getDescription(), "new");
     }
 
