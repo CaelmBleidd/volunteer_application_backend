@@ -1,33 +1,44 @@
 package ru.ifmo.volunteer.service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import ru.ifmo.volunteer.dto.TaskTo;
 import ru.ifmo.volunteer.exception.ResourceNotFoundException;
+import ru.ifmo.volunteer.model.Event;
 import ru.ifmo.volunteer.model.Task;
+import ru.ifmo.volunteer.repository.EventRepository;
 import ru.ifmo.volunteer.repository.TaskRepository;
 
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
+    private final EventRepository eventRepository;
 
-    public TaskService(final TaskRepository taskRepository) {
+    public TaskService(final TaskRepository taskRepository, EventRepository eventRepository) {
         this.taskRepository = taskRepository;
+        this.eventRepository = eventRepository;
     }
 
     public List<Task> getAllTasksByEventId(final long id) {
         return taskRepository.findAllById(taskRepository.findAllTasksByEventId(id));
     }
 
-    public List<TaskTo> getAllTasksForUserByEventId(long eventId, long userId) {
-        return taskRepository.findAllById(taskRepository.findAllTasksByEventId(eventId)).stream()
-                             .map(task -> new TaskTo(task.getId(),
-                                                     task.getTitle(),
-                                                     task.getDescription(),
-                                                     taskRepository.getStatus(task.getId())))
-                             .collect(Collectors.toList());
+    public List<TaskTo> getAllTasksForUserByEventId(long userId) {
+        Optional<Long> eventId = eventRepository.findNearestEventId(userId).stream()
+                                                .filter(event -> event.getEndDate() > System.currentTimeMillis())
+                                                .min(Comparator.comparing(Event::getStartDate))
+                                                .map(Event::getId);
+        return eventId.map(aLong -> taskRepository.findAllById(taskRepository.findAllTasksByEventId(aLong)).stream()
+                                                  .map(task -> new TaskTo(task.getId(),
+                                                                          task.getTitle(),
+                                                                          task.getDescription(),
+                                                                          taskRepository.getStatus(task.getId())))
+                                                  .collect(Collectors.toList())).orElse(Collections.emptyList());
     }
 
     public TaskTo create(Task task, long eventId) {

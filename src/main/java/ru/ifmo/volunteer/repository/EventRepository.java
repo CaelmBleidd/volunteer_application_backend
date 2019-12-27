@@ -64,4 +64,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query(value = "SELECT COUNT(*) FROM user_to_event WHERE event_id = :eventId AND user_id = :userId",
            nativeQuery = true)
     int isStarred(@Param("userId") long userId, @Param("eventId") long eventId);
+
+    @Query(
+            value = "SELECT * FROM event INNER JOIN user_to_event ute on event.id = ute.event_id WHERE user_id=:userId",
+            nativeQuery = true)
+    List<Event> findNearestEventId(@Param("userId")long userId);
 }

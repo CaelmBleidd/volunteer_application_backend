@@ -23,9 +23,9 @@ public class TaskController {
             response = TaskTo.class,
             responseContainer = "List"
     )
-    @GetMapping("{eventId}/tasks")
-    public List<TaskTo> getAllTasksForUserByEventId(@PathVariable long eventId, @RequestParam("userId") long userId) {
-        return taskService.getAllTasksForUserByEventId(eventId, userId);
+    @GetMapping("{userId}/tasks")
+    public List<TaskTo> getAllTasksForUserByEventId(@PathVariable long userId) {
+        return taskService.getAllTasksForUserByEventId(userId);
     }
 
     @ApiOperation(
